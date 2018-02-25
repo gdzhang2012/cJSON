@@ -307,6 +307,17 @@ CJSON_PUBLIC(void) cJSON_Delete(cJSON *item)
     delete_item(item, &global_context);
 }
 
+CJSON_PUBLIC(void) cJSON_DeleteWithContext(cJSON *item, cJSON_Context context)
+{
+    internal_context *local_context = &global_default_context;
+    if (context != NULL)
+    {
+        local_context = (internal_context*)context;
+    }
+
+    delete_item(item, local_context);
+}
+
 static int double_to_saturated_integer(double number)
 {
     if (number >= INT_MAX)
@@ -1168,6 +1179,24 @@ CJSON_PUBLIC(cJSON *) cJSON_Parse(const char *json)
     }
 
     return parse(json, strlen((const char*)json) + sizeof(""), &global_context);
+}
+
+CJSON_PUBLIC(cJSON *) cJSON_ParseWithContext(const char *json, const size_t length, cJSON_Context context)
+{
+    internal_context local_context = global_default_context;
+    internal_context *context_pointer = &local_context;
+
+    if (json == NULL)
+    {
+        return NULL;
+    }
+
+    if (context != NULL)
+    {
+        context_pointer = (internal_context*)context;
+    }
+
+    return parse(json, length, context_pointer);
 }
 
 #define cjson_min(a, b) ((a < b) ? a : b)

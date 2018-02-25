@@ -54,6 +54,7 @@ if(ENABLE_CJSON_TEST)
         print_value
         misc_tests
         parse_with_opts
+        parse_with_context
         compare_tests
         cjson_add
         readme_examples

@@ -163,7 +163,7 @@ CJSON_PUBLIC(cJSON_Context) cJSON_DuplicateContext(const cJSON_Context, const cJ
 CJSON_PUBLIC(cJSON_Context) cJSON_SetAllocators(cJSON_Context context, const cJSON_Allocators allocators);
 /* Change the allocator userdata attached to a cJSON_Context */
 CJSON_PUBLIC(cJSON_Context) cJSON_SetUserdata(cJSON_Context context, void *userdata);
-/* Get the position relative to the JSON where the parser stopped, return 0 if invalid. */
+/* Get the position relative to the JSON where the parser stopped (index), returns 0 if invalid. */
 CJSON_PUBLIC(size_t) cJSON_GetParseEnd(cJSON_Context context);
 /* Set how many bytes should be initially allocated for printing */
 CJSON_PUBLIC(cJSON_Context) cJSON_SetPrebufferSize(cJSON_Context context, const size_t buffer_size);
@@ -186,6 +186,15 @@ CJSON_PUBLIC(cJSON *) cJSON_Parse(const char *json);
 /* ParseWithOpts allows you to require (and check) that the JSON is null terminated, and to retrieve the pointer to the final byte parsed. */
 /* If you supply a ptr in return_parse_end and parsing fails, then return_parse_end will contain a pointer to the error so will match cJSON_GetErrorPtr(). */
 CJSON_PUBLIC(cJSON *) cJSON_ParseWithOpts(const char *json, const char **return_parse_end, cJSON_bool require_null_terminated);
+/* Parse a JSON getting the configuration from a context and writing feedback to the context.
+ *
+ * The parsed item needs to be free later with cJSON_DeleteWithContext, using the same context.
+ *
+ * The JSON doesn't need to be zero terminated.
+ * If the context is NULL, the default context is used.
+ * (All contexts, including the default context doesn't work with cJSON_InitHooks and
+ * cJSON_GetErrorPtr! Use appropriate cJSON_Context related functions instead) */
+CJSON_PUBLIC(cJSON *) cJSON_ParseWithContext(const char *json, const size_t length, cJSON_Context context);
 
 /* Render a cJSON entity to text for transfer/storage. */
 CJSON_PUBLIC(char *) cJSON_Print(const cJSON *item);
@@ -198,6 +207,7 @@ CJSON_PUBLIC(char *) cJSON_PrintBuffered(const cJSON *item, int prebuffer, cJSON
 CJSON_PUBLIC(cJSON_bool) cJSON_PrintPreallocated(cJSON *item, char *buffer, const int length, const cJSON_bool format);
 /* Delete a cJSON entity and all subentities. */
 CJSON_PUBLIC(void) cJSON_Delete(cJSON *item);
+CJSON_PUBLIC(void) cJSON_DeleteWithContext(cJSON *item, cJSON_Context context);
 
 /* Returns the number of items in an array (or object). */
 CJSON_PUBLIC(int) cJSON_GetArraySize(const cJSON *array);
