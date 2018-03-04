@@ -215,9 +215,12 @@ static cJSON *cJSON_New_Item(const internal_hooks * const hooks)
 CJSON_PUBLIC(void) cJSON_Delete(cJSON *item)
 {
     cJSON *next = NULL;
+    /* traverse the list */
     while (item != NULL)
     {
+        /* sibling node */
         next = item->next;
+        /* child node, recursive call */
         if (!(item->type & cJSON_IsReference) && (item->child != NULL))
         {
             cJSON_Delete(item->child);
