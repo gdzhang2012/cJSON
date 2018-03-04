@@ -54,6 +54,7 @@ static int print_preallocated(cJSON *root)
 
     /* create buffer to succeed */
     /* the extra 5 bytes are because of inaccuracies when reserving memory */
+    /* FIXME: Why do this? */
     len = strlen(out) + 5;
     buf = (char*)malloc(len);
     if (buf == NULL)
